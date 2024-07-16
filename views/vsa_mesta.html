@@ -1,0 +1,41 @@
+% rebase('osnova.html')
+
+<h2>Vse evropske prestolnice</h2>
+
+<ul>
+<ol>
+    <div class="row">
+        <div class="column1">
+            % for i in range(0,10):
+            <li><p><a class="one" href='/vsa_mesta_vmesna/{{idji[i]}}'>{{mesta[i]}}</a></p></li> 
+            %end
+        </div>
+        <div class="column1">
+            % for i in range(10,20):
+            <li><p><a class="one" href='/vsa_mesta_vmesna/{{idji[i]}}'>{{mesta[i]}}</a></p></li> 
+            %end
+        </div>
+        <div class="column1">
+            % for i in range(20,30):
+            <li><p><a class="one" href='/vsa_mesta_vmesna/{{idji[i]}}'>{{mesta[i]}}</a></p></li> 
+            %end
+        </div>
+        <div class="column1">
+            % for i in range(30,40):
+            <li><p><a class="one" href='/vsa_mesta_vmesna/{{idji[i]}}'>{{mesta[i]}}</a></p></li> 
+            %end
+        </div>
+        <div class="column1">
+            % for i in range(40,50):
+            <li><p><a class="one" href='/vsa_mesta_vmesna/{{idji[i]}}'>{{mesta[i]}}</a></p></li> 
+            %end
+        </div>
+    </div>
+
+</ol>
+    
+</ul>
+<form>
+    <input class ='button2' type="button" value="Nazaj!" onclick="history.back()">
+</form>
+

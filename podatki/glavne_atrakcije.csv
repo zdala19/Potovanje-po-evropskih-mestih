@@ -1,4 +1,4 @@
-id_mesta,glavne_atrakcije
+id_mesta,glavna_atrakcija
 1,znamenitosti
 1,bližina morja
 2,parki
@@ -50,7 +50,7 @@ id_mesta,glavne_atrakcije
 25,parki
 25,znamenitosti
 26,znamenitosti
-27,muteji
+27,muzeji
 27,parki
 28,kopališča
 28,parki
@@ -64,15 +64,15 @@ id_mesta,glavne_atrakcije
 32,bližina morja
 33,muzeji
 33,parki
-33,znamenitsoti
+33,znamenitosti
 34,parki
 34,muzeji
-34,živaslki vrt
+34,živalski vrt
 34,bližina morja
 35,muzeji
 36,parki
 36,muzeji
-36,znamenitsoti
+36,znamenitosti
 37,muzeji
 37,bližina morja
 37,parki

@@ -1,0 +1,25 @@
+% rebase('osnova.html')
+
+
+
+<h2>Mesta glede na glavne atrakcije</h2>
+
+
+
+<ul style="margin-left: 45%;">
+        <table>
+                <tr>Mesta:</tr>
+                <tr>
+<ol>
+% for i in range(len(idji_po_glavnih_atrakcijah)):
+
+        <li><p><a class="one" href='/izpisi_podatke_glavne_atrakcije_vmesna/{{idji_po_glavnih_atrakcijah[i]}}'>{{mesta_po_glavnih_atrakcijah[i]}}</a></p></li>
+
+% end
+</ol>
+                </tr>
+        </table>
+        <form>
+                <input class ='button2' type="button" value="Nazaj!" onclick="history.back()">
+        </form>
+</ul>

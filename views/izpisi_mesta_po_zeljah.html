@@ -1,0 +1,30 @@
+% rebase('osnova.html')
+
+<h2>Mesta glede na želje</h2>
+
+%if len(idji_po_zeljah) is not 0:
+<ul style="margin-left: 45%;">
+        <table>
+                <tr>Mesta:</tr>
+                <tr>
+<ol>
+
+         % for i in range(len(idji_po_zeljah)):
+        <li><p><a class="one" href='/izpisi_podatke_po_zeljah_vmesna/{{idji_po_zeljah[i]}}'>{{mesta_po_zeljah[i]}}</a></p></li>
+
+        % end
+
+        
+</ol>
+                </tr>
+        </table>
+%else:
+<p style="text-align: center;">Nobeno mesto ne ustreza vašim željam. Izbirite si druge opcije in poskusite ponovno!</p>
+%end
+
+<form>
+        <input class ='button2' type="button" value="Nazaj!" onclick="history.back()">
+</form>
+
+
+</ul>

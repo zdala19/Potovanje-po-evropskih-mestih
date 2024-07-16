@@ -1,0 +1,26 @@
+% rebase('osnova.html')
+
+
+
+<h2>Mesta glede na letni čas</h2>
+
+
+
+<ul style="margin-left: 45%;">
+        <table>
+                <tr>Mesta:</tr>
+                <tr>
+<ol>
+% for i in range(len(idji_po_letnem_casu)):
+
+        <li><p><a class="one" href='/izpisi_podatke_mesta_po_casu_vmesna/{{idji_po_letnem_casu[i]}}'>{{mesta_po_letnem_casu[i]}}</a></p></li>
+
+% end
+</ol>
+                </tr>
+        </table>
+        <form>
+                <input class ='button2' type="button" value="Nazaj!" onclick="history.back()">
+        </form>
+
+</ul>

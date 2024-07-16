@@ -1,0 +1,134 @@
+% rebase('osnova.html')
+<style>
+    .comment-box{
+        width: 50%;
+        border: 1px solid #ccc;
+        margin: 50px 0;
+        padding: 10px 20px;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        border-radius: 5px;
+        margin-left: 25%;
+        box-shadow: 0px 0px 10px 1px rgb(132, 149, 182);
+    }
+    .comment-box p{
+        text-align: left;
+        font-size: 20px;
+        color: #777
+    }
+    .comment-form input, .comment-form textarea{
+        width: 70%;
+        padding: 10px;
+        margin: 5px 0;
+        box-sizing: border-box;
+        outline: none;
+        font-size: 15px;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        border: 1px solid #ddd;
+        color: #777 }
+    
+    .button5{
+        margin: 10px 0;
+        border: none;
+        background-color: #81a0c8;
+        padding: 10px;            
+        font-size: 16px;
+        border-radius:3px;
+        color: #444}
+
+    .button5:hover{
+        color: white;
+        background-color: #444;
+    }
+    .h3{
+        text-align: center;
+        font-size: medium;
+        color: black;
+        font-family: Garamond, serif;
+    }
+    .comment-section{
+        width: 50%;
+        border: 1px solid #ccc;
+        margin: 50px 0;
+        padding: 10px 20px;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        border-radius: 5px;
+        margin-left: 25%;
+        box-shadow: 0px 0px 10px 1px rgb(132, 149, 182);
+    }
+    .comment-section p{
+        text-align: left;
+        font-size: 15px;
+        color: #000000
+    }
+</style>  
+
+<div class="comment-box">
+    <h3 style='align-items: center;'>Napišite vaše mnenje o obiskanem mestu!</h3>
+    <form class="comment-form" action="/vsa_mesta_vmesna/<id>" method="POST">
+        <!--<input type="text" placeholder="Mesto" name="mesto">-->
+        <h4 for="mesto">Mesto:</h4>
+        <select name="mesto" id ="mesto">
+            <option value="">--Izberi obiskano mesto--</option>
+            <option value="Tirana">Tirana</option>
+            <option value="Andorra la Vella">Andorra la Vella</option>
+            <option value="Erevan">Erevan</option>
+            <option value="Dunaj">Dunaj</option>
+            <option value="Baku">Baku</option>
+            <option value="Bruselj">Bruselj</option>
+            <option value="Minsk">Minsk</option>
+            <option value="Sarajevo">Sarajevo</option>
+            <option value="Sofija">Sofija</option>
+            <option value="Praga">Praga</option>
+            <option value="Nikozija">Nikozija</option>
+            <option value="Podgorica">Podgorica</option>
+            <option value="Kopenhagen">Kopenhagen</option>
+            <option value="Talin">Talin</option>
+            <option value="Helsinki">Helsinki</option>
+            <option value="Pariz">Pariz</option>
+            <option value="Atene">Atene</option>
+            <option value="Tbilisi">Tbilisi</option>
+            <option value="Zagreb">Zagreb</option>
+            <option value="Dublin">Dublin</option>
+            <option value="Reykjavik">Reykjavik</option>
+            <option value="Rim">Rim</option>
+            <option value="Priština">Priština</option>
+            <option value="Riga">Riga</option>
+            <option value="Vaduz">Vaduz</option>
+            <option value="Vilna">Vilna</option>
+            <option value="Luksemburg">Luksemburg</option>
+            <option value="Budimpešta">Budimpešta</option>
+            <option value="Skopje">Skopje</option>
+            <option value="Valeta">Valeta</option>
+            <option value="Kišinjev">Kišinjev</option>
+            <option value="Monako">Monako</option>
+            <option value="Berlin">Berlin</option>
+            <option value="Amsterdam">Amsterdam</option>
+            <option value="Oslo">Oslo</option>
+            <option value="Varšava">Varšava</option>
+            <option value="Lisbona">Lisbona</option>
+            <option value="Bukarešta">Bukarešta</option>
+            <option value="Moskva">Moskva</option>
+            <option value="San Marino">San Marino</option>
+            <option value="Beograd">Beograd</option>
+            <option value="Bratislava">Bratislava</option>
+            <option value="Ljubljana">Ljubljana</option>
+            <option value="Madrid">Madrid</option>
+            <option value="Stockholm">Stockholm</option>
+            <option value="Bern">Bern</option>
+            <option value="Ankara">Ankara</option>
+            <option value="Kijev">Kijev</option>
+            <option value="Vatikan">Vatikan</option>
+            <option value="London">London</option>
+
+        </select>
+        <h4>Ime:</h4>
+        <input type="text" placeholder="Ime" name="ime">
+        <h4>Komentar:</h4>
+        <textarea rows="5" placeholder="Napiši komentar" name="komentar"></textarea>
+        <button class = "button5" type="submit">Pošlji!</button>
+    </form>
+</div>
+
+<form>
+    <input class ='button2' type="button" value="Nazaj!" onclick="history.back()">
+</form>

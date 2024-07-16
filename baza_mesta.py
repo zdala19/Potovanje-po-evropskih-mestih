@@ -1,90 +1,130 @@
 import csv
 
-import sqlite3
 
-db = sqlite3.connect("baza_potovanj.db")
-
-def naredi_tabele(datoteka):
-    '''funkcija naredi tabelo iz podatkov v datoteki'''
-    tab = []
-    with open(datoteka,'r',encoding='utf-8') as file:
-        csvreader = csv.reader(file)
-        header = next(csvreader)
-        for vrstica in csvreader:
-            tab.append((vrstica[i] for i in vrstica))
-    return tab
+PARAM_FMT = ":{}" # za SQLite
 
 
-############################################################
+class Tabela:
+    """
+    Razred, ki predstavlja tabelo v bazi.
+    Polja razreda:
+    - ime: ime tabele
+    - podatki: ime datoteke s podatki ali None
+    """
+    ime = None
+    podatki = None
 
-evropske_drzave = []
-with open('evropske_drzave.csv','r',encoding='utf-8') as file:
-    csvreader = csv.reader(file)
-    header = next(csvreader)
-    for vrstica in csvreader:
-        evropske_drzave.append((vrstica[0],vrstica[1]))
+    def __init__(self, conn):
+        """
+        Konstruktor razreda.
+        """
+        self.conn = conn
 
-with db as cursor:
-    cursor.execute("""
+    def ustvari(self):
+        """
+        Metoda za ustvarjanje tabele.
+        Podrazredi morajo povoziti to metodo.
+        """
+        raise NotImplementedError
+
+    def izbrisi(self):
+        """
+        Metoda za brisanje tabele.
+        """
+        self.conn.execute(f"DROP TABLE IF EXISTS {self.ime};")
+
+    def uvozi(self):
+        """
+        Metoda za uvoz podatkov.
+        Argumenti:
+        - encoding: kodiranje znakov
+        """
+        if self.podatki is None:
+            return
+        with open(self.podatki, encoding = 'utf-8') as datoteka:
+            podatki = csv.reader(datoteka, delimiter=",")
+            stolpci = next(podatki)
+            for vrstica in podatki:
+                vrstica = {k: None if v == "" else v for k, v in zip(stolpci, vrstica)}
+                self.dodaj_vrstico(**vrstica)
+
+    def izprazni(self):
+        """
+        Metoda za praznjenje tabele.
+        """
+        self.conn.execute(f"DELETE FROM {self.ime};")
+
+    def dodajanje(self, stolpci=None):
+        """
+        Metoda za gradnjo poizvedbe.
+        Argumenti:
+        - stolpci: seznam stolpcev
+        """
+        return f"""
+            INSERT INTO {self.ime} ({", ".join(stolpci)})
+            VALUES ({", ".join(PARAM_FMT.format(s) for s in stolpci)});
+        """
+
+    def dodaj_vrstico(self, **podatki):
+        """
+        Metoda za dodajanje vrstice.
+        Argumenti:
+        - poimenovani parametri: vrednosti v ustreznih stolpcih
+        """
+        podatki = {kljuc: vrednost for kljuc, vrednost in podatki.items()
+                   if vrednost is not None}
+        poizvedba = self.dodajanje(podatki.keys())
+        cur = self.conn.execute(poizvedba, podatki)
+        return cur.lastrowid
+
+class Drzava(Tabela):
+    '''
+    Tabela vseh držav
+    '''
+    ime = "drzave"
+    podatki = "podatki/evropske_drzave.csv"
+
+    def ustvari(self):
+        '''Ustvari tabelo drzave'''
+        self.conn.execute("""
                 CREATE TABLE IF NOT EXISTS
                 drzave(
-                ime TEXT UNIQUE,
-                kratica TEXT NOT NULL PRIMARY KEY UNIQUE
+                ime TEXT,
+                kratica TEXT PRIMARY KEY NOT NULL
                 )
                 """)
 
-def napolni_drzave():
+class GlavnaMesta(Tabela):
+    '''
+    Tabela glavnih mest
+    '''
+    ime = "glavna_mesta"
+    podatki = "podatki/glavna_mesta.csv"
 
-    with db as cursor:
-        for (ime, kratica) in evropske_drzave:
-            cursor.execute("""
-            INSERT INTO drzave (ime, kratica)
-                VALUES(:dr_ime, :dr_kratica)""",{"dr_ime":ime, "dr_kratica":kratica})
-##############################################################################################################            
-glavna_mesta = []
-
-with open("glavna_mesta.csv", "r",encoding='utf-8') as file:
-    csvreader = csv.reader(file)
-    header = next(csvreader)
-    for vrstica in csvreader:
-                glavna_mesta.append((vrstica[0],vrstica[3],vrstica[4],vrstica[5],vrstica[6], vrstica[7]))
-
-
-with db as cursor:
-    cursor.execute("""
+    def ustvari(self):
+        '''Ustvari tabelo glavna_mesta'''
+        self.conn.execute("""
                 CREATE TABLE IF NOT EXISTS
                 glavna_mesta(
-                id INTEGER NOT NULL PRIMARY KEY UNIQUE,
-                mesto TEXT,
+                id INTEGER NOT NULL PRIMARY KEY,
+                drzava TEXT,
+                kratica TEXT,
+                ime TEXT,
                 letni_cas TEXT,
                 stevilo_dni INTEGER,
                 cenovni_rang INTEGER,
-                opis TEXT)
+                opis TEXT,
+                url TEXT)
                 """)
-    
 
-def napolni_gl_mesta():
-   with db as cursor:
-       for (id, mesto, letni_cas, stevilo_dni, cenovni_rang,opis) in glavna_mesta:
-            cursor.execute("""
-            INSERT INTO glavna_mesta (id, mesto, letni_cas, stevilo_dni, cenovni_rang,opis)
-               VALUES(:mesto_id, :mesto_ime, :mesto_letnicas, :mesto_stevilodni, :mesto_cenovnirang, :mesto_opis)""",
-               {"mesto_id":id, "mesto_ime":mesto, "mesto_letnicas":letni_cas, "mesto_stevilodni": stevilo_dni,
-               "mesto_cenovnirang":cenovni_rang, "mesto_opis": opis})
+class Rang(Tabela):
+    '''Tabela rang'''
+    ime = "cenovni_rang"
+    podatki = "podatki/cenovni_rang.csv"
 
-##########################################################################################################           
-cenovni_rang = []
-
-with open('cenovni_rang.csv','r',encoding='utf-8') as file:
-    csvreader = csv.reader(file)
-    header = next(csvreader)
-    for vrstica in csvreader:
-        cenovni_rang.append((vrstica[0],vrstica[1]))
-
-db = sqlite3.connect("baza_potovanj.db")
-
-with db as cursor:
-    cursor.execute("""
+    def ustvari(self):
+        '''Ustvari tabelo cenovnih rangov'''
+        self.conn.execute("""
                 CREATE TABLE IF NOT EXISTS
                 cenovni_rang(
                 cena TEXT,
@@ -92,95 +132,127 @@ with db as cursor:
                 )
                 """)
 
-def napolni_rang():
-    with db as cursor:
-        for (cena, rang) in cenovni_rang:
-            cursor.execute("""
-            INSERT INTO cenovni_rang (cena, rang)
-                VALUES(:_cena, :_rang)""",{"_cena":cena, "_rang":rang})
+class GlavnaMestaInDrzave(Tabela):
+    """Tabela vseh mest."""
+    ime = "gl_mesta_in_drzave"
+    podatki = "podatki/gl_mesta_in_drzave.csv"
 
-########################################################################################
-gl_mesta_in_drzave = []
-
-with open('gl_mesta_in_drzave.csv','r',encoding='utf-8') as file:
-    csvreader = csv.reader(file)
-    header = next(csvreader)
-    for vrstica in csvreader:
-        gl_mesta_in_drzave.append((vrstica[0],vrstica[1]))
-
-db = sqlite3.connect("baza_potovanj.db")
-
-with db as cursor:
-    cursor.execute("""
+    def ustvari(self):
+        '''Ustvari tabelo glavnih mest in drzav'''
+        self.conn.execute("""
                 CREATE TABLE IF NOT EXISTS
-                gl_mesta_in_drzave (
-                id_mesta INTEGER NOT NULL PRIMARY KEY,
+                gl_mesta_in_drzave(
+                id_mesta INTEGER,
                 kratica_drzave TEXT
                 )
-                """)
+                 """)
 
-def napolni_gl_mesta_in_drzave():
-    with db as cursor:
-        for (id_mesta, kratica_drzave) in gl_mesta_in_drzave:
-            cursor.execute("""
-            INSERT INTO gl_mesta_in_drzave (id_mesta, kratica_drzave)
-                VALUES(:_idmesta, :dr_kratica)""",{"_idmesta":id_mesta, "dr_kratica":kratica_drzave})
+class Namen(Tabela):
+    "Tabela z vsemi nameni potovanja."
+    ime = "namen"
+    podatki = "podatki/namen.csv"
 
-##########################################################################################################
-nameni = []
-
-
-with open('namen.csv','r',encoding='utf-8') as file:
-    csvreader = csv.reader(file)
-    header = next(csvreader)
-    for vrstica in csvreader:
-        nameni.append((vrstica[0],vrstica[1]))
-
-with db as cursor:
-    cursor.execute("""
-                CREATE TABLE IF NOT EXISTS
+    def ustvari(self):
+        self.conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS
                 namen (
-                id_mesta INTEGER UNIQUE,
+                id_mesta INTEGER,
                 namen TEXT
                 )
-                """)
+            """
+        )
 
-def napolni_namen():
-    with db as cursor:
-        for (id_mesta, namen) in nameni:
-            cursor.execute("""
-            INSERT INTO namen (id_mesta, namen)
-                VALUES(:_idmesta, :_namen)""",{"_idmesta":id_mesta, "_namen":namen})
+class GlavneAtrakcije(Tabela):
+    "Tabela z vsemi glavnimi atrakcijami"
+    ime = "glavne_atrakcije"
+    podatki = "podatki/glavne_atrakcije.csv"
 
-################################################################################################3
-glavne_atrakcije = []
-
-with open('glavne_atrakcije.csv','r',encoding='utf-8') as file:
-    csvreader = csv.reader(file)
-    header = next(csvreader)
-    for vrstica in csvreader:
-        glavne_atrakcije.append((vrstica[0],vrstica[1]))
-
-
-with db as cursor:
-    cursor.execute("""
-                CREATE TABLE IF NOT EXISTS
+    def ustvari(self):
+        self.conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS
                 glavne_atrakcije (
                 id_mesta INTEGER,
                 glavna_atrakcija TEXT
                 )
-                """)
+            """
+        )
 
-def napolni_glavne_atrakcije():
-    with db as cursor:
-        for (id_mesta, glavna_atrakcija) in glavne_atrakcije:
-            cursor.execute("""
-            INSERT INTO glavne_atrakcije (id_mesta, glavna_atrakcija)
-                VALUES(:_idmesta, :gl_atrakcija)""",{"_idmesta":id_mesta, "gl_atrakcija":glavna_atrakcija})
+class Komentarji(Tabela):
+    "Tabela z vsemi podanimi komentarji"
+    ime ='komentarji'
 
-napolni_drzave()
-napolni_gl_mesta()
-napolni_rang()
-napolni_gl_mesta_in_drzave()
-napolni_namen()
-napolni_glavne_atrakcije()
+    def ustvari(self):
+        # KOMENTAR
+        self.conn.execute(
+            """CREATE TABLE IF NOT EXISTS komentar (
+                mesto TEXT,
+                cas TIMESTAMP,
+                ime TEXT NOT NULL,
+                komentar TEXT NOT NULL)
+            """)
+
+def ustvari_tabele(tabele):
+    """
+    Ustvari podane tabele.
+    """
+    for t in tabele:
+        t.ustvari()
+
+
+def izbrisi_tabele(tabele):
+    """
+    Izbriši podane tabele.
+    """
+    for t in tabele:
+        t.izbrisi()
+
+
+def uvozi_podatke(tabele):
+    """
+    Uvozi podatke v podane tabele.
+    """
+    for t in tabele:
+        t.uvozi()
+
+
+def izprazni_tabele(tabele):
+    """
+    Izprazni podane tabele.
+    """
+    for t in tabele:
+        t.izprazni()
+
+
+def pripravi_tabele(conn):
+    """
+    Pripravi objekte za tabele.
+    """
+    drzave = Drzava(conn)
+    glavna_mesta = GlavnaMesta(conn)
+    cenovni_rang = Rang(conn)
+    gl_mesta_in_drzave = GlavnaMestaInDrzave(conn)
+    namen = Namen(conn)
+    glavne_atrakcije = GlavneAtrakcije(conn)
+    komentarji = Komentarji(conn)
+
+    return [drzave, glavna_mesta, cenovni_rang, gl_mesta_in_drzave, namen, glavne_atrakcije, komentarji]
+
+def ustvari_bazo(conn):
+    """
+    Izvede ustvarjanje baze.
+    """
+    tabele = pripravi_tabele(conn)
+    izbrisi_tabele(tabele)
+    ustvari_tabele(tabele)
+    uvozi_podatke(tabele)
+
+def ustvari_bazo_ce_ne_obstaja(conn):
+    """
+    Ustvari bazo, ce ta še ne obstaja.
+    """
+    with conn:
+        cur = conn.execute("SELECT COUNT(*) FROM sqlite_master")
+        if cur.fetchone() == (0, ):
+            ustvari_bazo(conn)

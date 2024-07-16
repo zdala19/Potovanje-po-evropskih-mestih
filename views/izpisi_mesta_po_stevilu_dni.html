@@ -1,0 +1,33 @@
+% rebase('osnova.html')
+
+
+
+<h2>Mesta glede na število dni</h2>
+
+
+
+<ul style="margin-left: 45%;">
+    
+<table>
+       <tr>Mesta:</tr>
+       <tr><ol>
+
+% for i in range(len(idji_po_stevilu_dni)):
+
+       <li><p><a class="one" href='/izpisi_podatke_stevila_dni_vmesna/{{idji_po_stevilu_dni[i]}}'>{{mesta_po_stevilu_dni[i]}}</a></p></li>
+
+% end
+</ol> </tr>
+
+ 
+</table>
+<form>
+       <input class ='button2' type="button" value="Nazaj!" onclick="history.back()">
+</form>
+
+
+
+</ul>
+
+
+
