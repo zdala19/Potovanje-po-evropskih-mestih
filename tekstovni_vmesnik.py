@@ -59,7 +59,7 @@ def poisci_mesta_letni_čas():
     
     idji_mest = model.mesta_glede_na_letni_cas(letni_čas_obiska)
     print()
-    print(f"Mesta s primernim časom obiska{letni_čas_obiska}: ")
+    print(f"Mesta s primernim časom obiska ({letni_čas_obiska}): ")
     moznosti = [
         "{} ({})".format(ime, drzava) for _, ime, drzava in model.podatki_mest(idji_mest)
         ]
@@ -75,7 +75,7 @@ def poisci_mesta_št_dni():
     
     idji_mest = model.mesta_glede_na_stevilo_dni(st_dni_obiska_mes)
     print()
-    print(f"Mesta s primernim časom obiska{st_dni_obiska_mes}: ")
+    print(f"Mesta s primernim časom obiska ({st_dni_obiska_mes}): ")
     moznosti = [
         "{} ({})".format(ime, drzava) for _, ime, drzava in model.podatki_mest(idji_mest)
         ]
@@ -91,7 +91,7 @@ def poisci_mesta_cenovni_rang():
     
     idji_mest = model.mesta_glede_na_cenovni_rang(cenovni_r_obiska)
     print()
-    print(f"Mesta s primernim cenovnim rangom obiska{cenovni_r_obiska}: ")
+    print(f"Mesta s primernim cenovnim rangom obiska ({cenovni_r_obiska}): ")
     moznosti = [
         "{} ({})".format(ime, drzava) for _, ime, drzava in model.podatki_mest(idji_mest)
         ]
@@ -107,7 +107,7 @@ def poisci_mesta_namen_obiska():
     
     idji_mest = model.mesta_glede_na_namen(nameni_potovanja)
     print()
-    print(f"Mesta s primernim namenom obiska{nameni_potovanja}: ")
+    print(f"Mesta s primernim namenom obiska ({nameni_potovanja}): ")
     moznosti = [
         "{} ({})".format(ime, drzava) for _, ime, drzava in model.podatki_mest(idji_mest)
         ]
@@ -123,7 +123,7 @@ def poisci_mesta_glavne_atrakcije():
     
     idji_mest = model.mesta_glede_na_glavne_atrakcije(glavne_atrakcije_mest)
     print()
-    print(f"Mesta s primernimi glavnimi atrakcijami{glavne_atrakcije_mest}: ")
+    print(f"Mesta s primernimi glavnimi atrakcijami ({glavne_atrakcije_mest}): ")
     moznosti = [
         "{} ({})".format(ime, drzava) for _, ime, drzava in model.podatki_mest(idji_mest)
         ]
@@ -140,7 +140,7 @@ def izpis_podatkov_mesta(id_mest):
     print()
     mesto, drzava, letni_cas, stevilo_dni, opis, url = model.podatki_mesta(id_mest)
     letni_cas_obiska = model.cas_obiska_mesta(id_mest)
-    cenovni_rang = model.mesta_glede_na_cenovni_rang(id_mest)
+    cenovni_rang = model.cenovni_rang_mesta(id_mest)
     stevilo_dni_obiska = model.stevilo_dni_obiska_mesta(id_mest)
     opis = model.opis_mesta(id_mest)
 

@@ -85,6 +85,22 @@ def mesta_glede_na_cenovni_rang(id_mesta):
         cenovni_rangi.append(cenovni_rang)
     return cenovni_rangi
 
+def cenovni_rang_mesta(id_mesta):
+    '''
+    Funkcija vrne cenovni rang potovanja, ki ima podan ID.
+    '''
+    poizvedba = """
+        SELECT cena
+  FROM glavna_mesta
+       JOIN
+       cenovni_rang ON glavna_mesta.cenovni_rang = cenovni_rang.rang 
+        WHERE id = ?
+    """
+    cenovni_rang_potovanja = []
+    for (cenovni_rang_mesto,) in conn.execute(poizvedba, [id_mesta]):
+        cenovni_rang_potovanja.append(cenovni_rang_mesto)
+    return cenovni_rang_potovanja
+
 #iskanje mest glede na stevilo dni
 def mesta_glede_na_stevilo_dni(stevilo_dni):
     '''
@@ -249,8 +265,10 @@ def podatki_mesta(id_mesta):
     Funkcije vrne podatke o mestu z podanim idjem
     """
     poizvedba = """
-        SELECT ime, drzava, letni_cas, stevilo_dni, opis, url
+        SELECT ime, drzava, letni_cas, stevilo_dni, opis, cenovni_rang.cena, url
         FROM glavna_mesta
+        JOIN cenovni_rang
+        ON glavna_mesta.cenovni_rang = cenovni_rang.rang
         WHERE id = ?
         """
     
@@ -258,5 +276,5 @@ def podatki_mesta(id_mesta):
     if osnovni_podatki is None:
         return None
     else:
-        mesto, drzava, letni_cas, stevilo_dni, opis, url = osnovni_podatki
-    return mesto, drzava, letni_cas, stevilo_dni, opis, url 
+        mesto, drzava, letni_cas, stevilo_dni, opis, cena, url = osnovni_podatki
+    return mesto, drzava, letni_cas, stevilo_dni, opis, cena, url 
