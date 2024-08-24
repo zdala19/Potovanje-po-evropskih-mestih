@@ -24,7 +24,7 @@ def podatki_vseh_mest(id):
     '''Izpiše vse podatke o mestu.'''
     podatki = model.podatki_mesta(id)
     komentarji = model.dobi_vse_komentarje(id)
-    return bottle.template('views/izpisi_podatke_mesta.html', pod = podatki,kom=komentarji)
+    return bottle.template('views/izpisi_podatke_mesta.html', pod = podatki,kom = komentarji)
 
 @bottle.post('/vsa_mesta_vmesna/<id>')
 def shrani_komentar(id):
@@ -35,6 +35,7 @@ def shrani_komentar(id):
     #Shrani v bazo
     model.shrani_komentar(mesto, trenuten_datum, ime, komentar)
     bottle.redirect('/komentarji')
+   
 
 
 #odpre se prva stran
@@ -45,7 +46,7 @@ def zacetek():
 #KOMENTARJI
 @bottle.get('/komentarji')
 def komentarji():
-    '''Odpre okno za možnpst komentiranja'''
+    '''Odpre okno za možnost komentiranja'''
     return bottle.template('views/komentarji.html')
     
 #NAMEN POTOVANJA
